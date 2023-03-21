@@ -29,6 +29,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import kotlinx.coroutines.launch
+import java.util.*
+import java.util.regex.Pattern
 
 @Composable
 fun HomeScreen(
@@ -39,54 +41,6 @@ fun HomeScreen(
         color = MaterialTheme.colors.background
     ) {
         val viewM = viewModel<MainViewModel>()
-//                    val sheetState = rememberBottomSheetState(
-//                        initialValue = BottomSheetValue.Expanded
-//                    )
-//                    val scaffoldState = rememberBottomSheetScaffoldState(
-//                        bottomSheetState = sheetState
-//                    )
-//                    val scope = rememberCoroutineScope()
-//                    // A surface container using the 'background' color from the theme
-//                    BottomSheetScaffold(
-//                        scaffoldState = scaffoldState,
-//                        sheetShape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
-//                        sheetContent = {
-//                            Box(
-//                                modifier = Modifier
-//                                    .fillMaxWidth()
-//                                    .wrapContentHeight()
-//                                    .clip(RoundedCornerShape(topStart = 50.dp, topEnd = 50.dp)),
-//                                contentAlignment = Alignment.Center,
-//                            ) {
-//                                Column() {
-//                                    TextFieldUi(viewModel = viewM)
-//                                }
-//
-//                            }
-//                        },
-//                        sheetBackgroundColor = Color.Red,
-//                        sheetPeekHeight = 0.dp
-//                    ) {
-//                        Box(
-//                            modifier = Modifier
-//                                .fillMaxSize()
-//                                .testTag("Box"),
-//                            contentAlignment = Alignment.Center
-//                        ) {
-//                            Button(onClick = {
-//                                scope.launch {
-//                                    if (sheetState.isCollapsed) {
-//                                        sheetState.expand()
-//                                    } else {
-//                                        sheetState.collapse()
-//                                    }
-//                                }
-//                            }) {
-//                                Text(text = "Toggle Sheet")
-//                            }
-//                        }
-//
-//                    }
         TextFieldUi(viewM, navController)
     }
 }
@@ -106,10 +60,6 @@ fun TextFieldUi(viewModel: MainViewModel, navController: NavController) {
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .statusBarsPadding()
-            .navigationBarsPadding()
-            .imePadding()
     ) {
         Log.e("nfjrnf", isKeyboardOpen.toString())
 
@@ -181,7 +131,7 @@ fun TextFieldUi(viewModel: MainViewModel, navController: NavController) {
                         if (result1) {
                             navController.navigate(Screen.Main.route)
                         } else {
-                            viewModel.showToast("invalidEmail",context)
+                            viewModel.showToast("invalidEmail", context)
                         }
                     },
                     enabled = result1,
@@ -198,7 +148,7 @@ fun TextFieldUi(viewModel: MainViewModel, navController: NavController) {
                         if (result2) {
                             navController.navigate(Screen.Main.route)
                         } else {
-                            viewModel.showToast("invalidNumber",context)
+                            viewModel.showToast("invalidNumber", context)
                         }
                     },
                     enabled = result2,
@@ -212,6 +162,8 @@ fun TextFieldUi(viewModel: MainViewModel, navController: NavController) {
             is ShowEmailOrMobile.DefaultOptions -> {
                 Button(
                     onClick = {
+                        focusManager.clearFocus()
+                        viewModel.updateFocus(false)
                         val result = viewModel.isEmpty(textFieldValue.value)
                         when (result) {
                             is SuccessOrError.Succes -> {
@@ -295,5 +247,50 @@ fun keyboardAsState(): State<Keyboard> {
     }
 
     return keyboardState
+}
+
+
+fun getAge(year: Int, month: Int, day: Int): Int {
+    //calculating age from dob
+    val dob = Calendar.getInstance()
+    val today = Calendar.getInstance()
+    dob[year, month] = day
+    var age = today[Calendar.YEAR] - dob[Calendar.YEAR]
+    return age
+}
+
+fun getValidYear(year: String): Boolean {
+    val ageRegex = Regex("(18|19|20)[0-9][0-9]")
+    return (year.toString()).matches(ageRegex)
+}
+
+fun getValidDay(dayOfMonth: String): Boolean {
+    val ageRegex = Regex("0?[1-9]|[12][0-9]|3[01]")
+    return (dayOfMonth.toString()).matches(ageRegex)
+}
+
+
+
+fun getValidMonth(month: String): Boolean {
+    val ageRegex = Regex("0?[1-9]|1[012]")
+    return (month.toString()).matches(ageRegex)
+}
+
+fun isValidMobile(phone: String?): Boolean {
+    return if(!phone.isNullOrEmpty()){
+
+        if (!Pattern.matches("[a-zA-Z]+", phone)) {
+            phone.length in 5..15
+        } else false
+    } else {
+        false
+    }
+}
+
+//new function which accepts both india and usa number and aplhabets not allowed in this one.
+fun isValid_USA_And_India_PhoneNumber(input: String): Boolean {
+    val usa_regex = Regex("^\\([4-6]{1}[0-9]{2}\\)\\s?[0-9]{3}-[0-9]{4}$")
+    val india_regex = Regex("^(\\+91[\\-\\s]?)?[0]?(91)?[789]\\d{9}\$")
+    return usa_regex.matches(input) || india_regex.matches(input) && input.length in 5..15
 }
 

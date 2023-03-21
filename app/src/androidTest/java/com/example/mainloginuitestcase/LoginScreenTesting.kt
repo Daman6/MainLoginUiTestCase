@@ -14,6 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.testing.TestNavHostController
+import androidx.test.core.app.ActivityScenario
 import com.example.mainloginuitestcase.ui.theme.MainLoginUiTestCaseTheme
 import org.junit.Before
 import org.junit.Rule
@@ -25,27 +26,6 @@ class LoginScreenTesting {
     @get:Rule
     val composeTestRule = createComposeRule()
 
-
-    //    @Test
-//    fun HideGoogleAndAppleBtnOnTextFieldFocus(){
-//        val viewModel = MainViewModel()
-//        composeTestRule.setContent {
-//            MainLoginUiTestCaseTheme {
-//                // A surface container using the 'background' color from the theme
-//                Surface(
-//                    modifier = Modifier.fillMaxSize(),
-//                    color = MaterialTheme.colors.background
-//                ) {
-//                    TextFieldUi(viewModel = viewModel )
-//                }
-//                }
-//        }
-//        composeTestRule.onNodeWithTag("LoginTextField").assertExists()
-//        composeTestRule.onNodeWithTag("Row").assertExists()
-//        composeTestRule.onNodeWithTag("LoginTextField").performTextInput("Singh.damandeep53@gmail.com")
-//        composeTestRule.onNodeWithTag("Row").assertDoesNotExist()
-//        composeTestRule.onNodeWithTag("VerifyBtn").assertIsDisplayed()
-//    }
     @Before
     fun SetUp() {
         composeTestRule.setContent {
@@ -72,6 +52,7 @@ class LoginScreenTesting {
 
     @Test
     fun EnterEmailInTextField() {
+
         composeTestRule.onNodeWithTag("LoginTextField").assertExists()
         composeTestRule.onNodeWithTag("Row").assertExists()
         composeTestRule.onNodeWithTag("LoginTextField")
@@ -82,6 +63,7 @@ class LoginScreenTesting {
         composeTestRule.onNodeWithTag("EmailCheckBox").performClick()
         composeTestRule.onNodeWithTag("EmailVerificationBtn").performClick()
     }
+
 
 
     @Test

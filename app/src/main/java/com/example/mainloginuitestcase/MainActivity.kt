@@ -50,19 +50,10 @@ class MainActivity : ComponentActivity() {
                 SetUpNavGraph(navHostController = navController)
             }
         }
-//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content)){view,insets->
-//            val bottom =insets.getInsets(WindowInsetsCompat.Type.ime()).bottom
-//            view.updatePadding(bottom = bottom)
-//            insets
-//        }
-    }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    MainLoginUiTestCaseTheme {
-//        TextFieldUi(v)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content)){view,insets->
+            val bottom =insets.getInsets(WindowInsetsCompat.Type.ime()).bottom
+            view.updatePadding(bottom = bottom)
+            insets
+        }
     }
 }
